@@ -12,12 +12,29 @@ library(sf)
 raw_fieldtree <- st_read("data/data_raw_field_trees_Slingsby-2019.gpkg")
 
 ### check spatial data
-
 class(raw_fieldtree)
+summary(raw_fieldtree)
+head(raw_fieldtree)
+view(raw_fieldtree)
 
 # check crs
 st_crs(raw_fieldtree)
-head(raw_fieldtree)
-view(raw_fieldtree)
+
+### tidy data
+
+# fix entries where the time is in cmt variable instead of time variable
+# see which entries don't have a value for time 
+raw_fieldtree %>%
+  filter(is.na(time))
+
+
+# long form data
+long_fieldtree <- raw_fieldtree %>%
+  pivot_longer(cols = c("site", "Size", "State"),
+               names_to = "variable", values_to = "value")
+head(long_fieldtree)
+
+
+
 
 
