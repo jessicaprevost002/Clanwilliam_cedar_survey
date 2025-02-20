@@ -7,6 +7,7 @@
 # load libraries
 library(tidyverse)
 library(sf)
+library(lubridate)
 
 # import spatial data
 raw_fieldtree <- st_read("data/data_raw_field_trees_Slingsby-2019.gpkg")
@@ -22,11 +23,17 @@ st_crs(raw_fieldtree)
 
 ### tidy data
 
-# fix entries where the time is in cmt variable instead of time variable
 # see which entries don't have a value for time 
 raw_fieldtree %>%
-  filter(is.na(time))
+  filter(is.na(time)) 
 
+# fix entries where the time is in cmt variable instead of time variable
+fieldtree <- raw_fieldtree %>%
+  mutate(time = ifelse(!is.na(time), time, format(dmy_hms(cmt), "%Y/%m/%d %H:%M:%S+00")))
+  
+  
+view(fieldtree)
+# 
 
 # long form data
 long_fieldtree <- raw_fieldtree %>%
