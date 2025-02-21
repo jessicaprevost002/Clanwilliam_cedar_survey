@@ -8,6 +8,7 @@
 library(tidyverse)
 library(sf)
 library(lubridate)
+library(ggspatial)
 
 # import spatial data
 raw_fieldtree <- st_read("data/data_raw_field_trees_Slingsby-2019.gpkg")
@@ -29,19 +30,39 @@ raw_fieldtree %>%
 
 # fix entries where the time is in cmt variable instead of time variable
 fieldtree <- raw_fieldtree %>%
-  mutate(time = ifelse(!is.na(time), time, format(dmy_hms(cmt), "%Y/%m/%d %H:%M:%S+00")))
-  
-  
+  mutate(time = ifelse(!is.na(time), time, format(dmy_hms(cmt), "%Y/%m/%d %H:%M:%S+00"))) %>% 
+  select(-cmt)
+  # ignore failed to parse error as this the one entry with a comment which isn't a date
+
 view(fieldtree)
-# 
 
 # long form data
-long_fieldtree <- raw_fieldtree %>%
+long_fieldtree <- fieldtree %>%
   pivot_longer(cols = c("site", "Size", "State"),
                names_to = "variable", values_to = "value")
-head(long_fieldtree)
+view(long_fieldtree)
 
+### plot data
+# plot using ggspatial 
 
+# create df with x and y coords which is required for geom_spatial_point
+df_fieldtree <- cbind(as.data.frame(fieldtree), st_coordinates(fieldtree))
 
+# plot trees by site with different colours for different states of alive/dead
+ggplot(df_fieldtree) +
+  geom_spatial_point(crs = 32734, aes(x = X, y = Y, color = State)) +
+  theme_minimal() +
+  facet_wrap(~site, scales = "free")
 
+# change crs to UTM
+utm_fieldtree <- st_transform(fieldtree, 32734)
+
+# create df with x and y coords which is required for geom_spatial_point
+df_fieldtree <- cbind(as.data.frame(utm_fieldtree), st_coordinates(utm_fieldtree))
+
+# plot trees by site with different colours for different states of alive/dead using UTM crs
+ggplot(df_fieldtree) +
+  geom_spatial_point(crs = 32734, aes(x = X, y = Y, color = State)) +
+  theme_minimal() +
+  facet_wrap(~site, scales = "free")
 
