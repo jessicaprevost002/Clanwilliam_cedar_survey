@@ -17,7 +17,6 @@ raw_fieldtree <- st_read("data/data_raw_field_trees_Slingsby-2019.gpkg")
 class(raw_fieldtree)
 summary(raw_fieldtree)
 head(raw_fieldtree)
-view(raw_fieldtree)
 
 # check crs
 st_crs(raw_fieldtree)
@@ -34,13 +33,13 @@ fieldtree <- raw_fieldtree %>%
   select(-cmt)
   # ignore failed to parse error as this the one entry with a comment which isn't a date
 
-view(fieldtree)
+head(fieldtree)
 
 # long form data
 long_fieldtree <- fieldtree %>%
   pivot_longer(cols = c("site", "Size", "State"),
                names_to = "variable", values_to = "value")
-view(long_fieldtree)
+head(long_fieldtree)
 
 ### plot data
 # plot using ggspatial 
@@ -49,8 +48,8 @@ view(long_fieldtree)
 df_fieldtree <- cbind(as.data.frame(fieldtree), st_coordinates(fieldtree))
 
 # plot trees by site with different colours for different states of alive/dead
-ggplot(df_fieldtree) +
-  geom_spatial_point(crs = 32734, aes(x = X, y = Y, color = State)) +
+site_plot <- ggplot(df_fieldtree) +
+  geom_spatial_point(crs = 4326, aes(x = X, y = Y, color = State)) +
   theme_minimal() +
   facet_wrap(~site, scales = "free")
 
@@ -61,8 +60,9 @@ utm_fieldtree <- st_transform(fieldtree, 32734)
 df_fieldtree <- cbind(as.data.frame(utm_fieldtree), st_coordinates(utm_fieldtree))
 
 # plot trees by site with different colours for different states of alive/dead using UTM crs
-ggplot(df_fieldtree) +
+site_plot_utm <- ggplot(df_fieldtree) +
   geom_spatial_point(crs = 32734, aes(x = X, y = Y, color = State)) +
   theme_minimal() +
   facet_wrap(~site, scales = "free")
 
+site_plot
