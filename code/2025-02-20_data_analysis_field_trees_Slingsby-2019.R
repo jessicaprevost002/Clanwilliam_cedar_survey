@@ -48,12 +48,14 @@ head(long_fieldtree)
 df_fieldtree <- cbind(as.data.frame(fieldtree), st_coordinates(fieldtree))
 
 # plot trees by site with different colours for different states of alive/dead
-site_plot <- ggplot(df_fieldtree) +
+ggplot(df_fieldtree) +
   geom_spatial_point(crs = 4326, aes(x = X, y = Y, color = State)) +
+  facet_wrap(~site, scales = "free", labeller = labeller(site = c("jsa12" = "Site 1", "jsa13" = "Site 2", "jsgm" = "Site 3"))) +
   theme_minimal() +
-  facet_wrap(~site, scales = "free")
+  scale_color_manual(labels = c(" Alive (Survey)" = "Alive", " Dead (Survey)" = "Dead"), values = c(" Alive (Survey)" = "green", " Dead (Survey)" = "red")) +
+  labs(x = "Longitude", y = "Latitude")
 
-# change crs to UTM
+# change crs to UTM to see ground distance in meters
 utm_fieldtree <- st_transform(fieldtree, 32734)
 
 # create df with x and y coords which is required for geom_spatial_point
