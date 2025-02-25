@@ -55,7 +55,7 @@ ggplot(df_fieldtree) +
   scale_color_manual(labels = c(" Alive (Survey)" = "Alive", " Dead (Survey)" = "Dead"), values = c(" Alive (Survey)" = "green", " Dead (Survey)" = "red")) +
   labs(x = "Longitude", y = "Latitude")
   facet_wrap(~site, scales = "free") +
-  theme_minimal() +
+  theme_minimal()
 
 # change crs to UTM to see ground distance in meters
 utm_fieldtree <- st_transform(fieldtree, 32734)
