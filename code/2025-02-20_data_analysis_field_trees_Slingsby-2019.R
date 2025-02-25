@@ -48,14 +48,12 @@ head(long_fieldtree)
 df_fieldtree <- cbind(as.data.frame(fieldtree), st_coordinates(fieldtree))
 
 # plot trees by site with different colours for different states of alive/dead
-ggplot(df_fieldtree) +
+site_plot <- ggplot(df_fieldtree) +
   geom_spatial_point(crs = 4326, aes(x = X, y = Y, color = State)) +
   facet_wrap(~site, scales = "free", labeller = labeller(site = c("jsa12" = "Site 1", "jsa13" = "Site 2", "jsgm" = "Site 3"))) +
   theme_minimal() +
   scale_color_manual(labels = c(" Alive (Survey)" = "Alive", " Dead (Survey)" = "Dead"), values = c(" Alive (Survey)" = "green", " Dead (Survey)" = "red")) +
-  labs(x = "Longitude", y = "Latitude") +
-  facet_wrap(~site, scales = "free") +
-  theme_minimal()
+  labs(x = "Longitude", y = "Latitude")
 
 # change crs to UTM to see ground distance in meters
 utm_fieldtree <- st_transform(fieldtree, 32734)
@@ -66,7 +64,9 @@ df_fieldtree <- cbind(as.data.frame(utm_fieldtree), st_coordinates(utm_fieldtree
 # plot trees by site with different colours for different states of alive/dead using UTM crs
 site_plot_utm <- ggplot(df_fieldtree) +
   geom_spatial_point(crs = 32734, aes(x = X, y = Y, color = State)) +
+  facet_wrap(~site, scales = "free", labeller = labeller(site = c("jsa12" = "Site 1", "jsa13" = "Site 2", "jsgm" = "Site 3"))) +
   theme_minimal() +
-  facet_wrap(~site, scales = "free")
+  scale_color_manual(labels = c(" Alive (Survey)" = "Alive", " Dead (Survey)" = "Dead"), values = c(" Alive (Survey)" = "green", " Dead (Survey)" = "red")) +
+  labs(x = "Longitude", y = "Latitude")
 
 site_plot
