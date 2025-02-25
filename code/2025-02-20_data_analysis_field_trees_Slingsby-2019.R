@@ -53,7 +53,7 @@ ggplot(df_fieldtree) +
   facet_wrap(~site, scales = "free", labeller = labeller(site = c("jsa12" = "Site 1", "jsa13" = "Site 2", "jsgm" = "Site 3"))) +
   theme_minimal() +
   scale_color_manual(labels = c(" Alive (Survey)" = "Alive", " Dead (Survey)" = "Dead"), values = c(" Alive (Survey)" = "green", " Dead (Survey)" = "red")) +
-  labs(x = "Longitude", y = "Latitude")
+  labs(x = "Longitude", y = "Latitude") +
   facet_wrap(~site, scales = "free") +
   theme_minimal()
 
